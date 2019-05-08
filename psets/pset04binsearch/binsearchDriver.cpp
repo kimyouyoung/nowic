@@ -23,6 +23,10 @@
  * To build this program:
  *  g++ binsearchDriver.cpp binsearch.cpp quicksort.cpp -o binsearch
  *
+ * On my honour, I pledge that I have neither received nor provided improper
+ * assistance in the completion of this assignment.
+ * Signed: __YouyoungKim__ YOUR NAME__YouyoungKim____  Section:___03_____  Student Number:_____21800147_____
+ *
  * 2018/03/08	Creation
  * 2018/02/02	C++ Conversion
  */
@@ -34,17 +38,18 @@ using namespace std;
 
 void printList(int *list, int N, int max_print = 10, int per_line = 5);
 void quickSort(int *a, int n);
-int binary_search(int *list, int key, int size);
+int binary_search(int *list, int toFind, int size);
 
 int main(int argc, char *argv[]) {
 	setvbuf(stdout, NULL, _IONBF, 0);		// print out immediately if any
 	setvbuf(stdin,  NULL, _IONBF, 0);		// read input immediately if any
 
 	vector<int> list;
+	string line;
 	int keyin;
 	cout << "Enter numbers to sort(q to quit): ";
 	while (cin >> keyin) {
-		cout << "your code here\n"		// adding to the end
+		list.push_back(keyin);			// adding to the end
 	}
 
 	int N = list.size();
@@ -57,19 +62,40 @@ int main(int argc, char *argv[]) {
 	srand((unsigned)time(NULL));	// comment out when debugging
 
 	// get a random number to use as a key for testing the binary search.
-	cout << "your code here\n"
+	int key = rand() % N;
 
 	cout << "\n\t" << key << " To Be Found.\n";
 
 	// invoke bineary_search to find key in the list.
 	// display the result
+	int index = binary_search(&list[0], key, N);
 
-  cout << "your code here\n"
+	if(index < 0) {
+		index = -(index + 1);
+		if(index > N) index = N - 1;
+		cout << "\t" << key << " is not @[" << index << "]\n";
+	}
+	else cout << "\t" << key << " is @[" << index << "]\n";
 
 	// print a few data around a possible key index or -index to check your output.
 	int extra = 4;						// a magic number
 
-	cout << "your code here\n"
+	if(index >= extra){
+		for(int i = extra - (extra * 2); i < extra; i++){
+			if(index + i > N - 1) break;
+			cout << "\t[" << index + i << "] = " << list[index + i] << endl;
+		}
+	}else if(index == 0){
+		for(int i = 0; i < extra * 2; i++){
+			if(index + i > N - 1) break;
+			cout << "\t[" << index + i << "] = " << list[index + i] << endl;
+		}
+	}else{
+		for(int i = 0; i < index + (extra - index); i++){
+			if(i > N - 1) break;
+			cout << "\t[" << i << "] = " << list[i] << endl;
+		}
+	}
 
 	cout << "Happy Coding~~\n";
 	// system("pause");

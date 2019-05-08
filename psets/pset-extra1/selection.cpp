@@ -11,21 +11,12 @@
 #include <sstream>
 #include <string>
 
-
-void selectionSort(int[], int);
-
 #if 0
 int main(void) {
 	int i, n;
 	int *list;
-	int max;
-	int num;
 	using namespace std;
 
-	cout << "Enter the Max_number of samples: ";
-	cin >> max;
-	cout << "Enter the range of random numbers: ";
-	cin >> num;
 
 	while(1){
 		cout << "Enter the number of samples: ";
@@ -33,17 +24,17 @@ int main(void) {
 
 		if(n == 0)
 			exit(1);
-		else if(n > 0 && n <= max)
+		else if(n > 0)
 			break;
 
-		cout << "Error! Enter a number between 1 to 100" << endl;
+		cout << "Error! Enter a number between 1 to n" << endl;
 	}
 
 	list = new int[n];
 
 	cout << endl << "UnSorted array:" << endl;
 	for (i = 0; i < n; i++) {       // randomly generate numbers
-		list[i] = rand() % num;
+		list[i] = rand() % n;
 		cout << list[i] << " ";
 	}
 
@@ -62,12 +53,12 @@ int main(void) {
 }
 #endif
 
-void selectionSort(int list[], int n) {
+void selectionSort(int list[], int n, int (*cmp)(int a, int b)) {
 	int i, j, min, temp;
 	for (i = 0; i < n - 1; i++) {
 		min = i;
 		for (j = i + 1; j < n; j++)
-			if (list[j] < list[min])
+			if (cmp(list[j], list[min]) <= 0)
 				min = j;
 			temp = list[i];
 			list[i] = list[min];

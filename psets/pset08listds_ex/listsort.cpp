@@ -1,3 +1,6 @@
+//On my honour, I pledge that I have neither received nor provided improper assistance
+// in the completion of this assignment. Signed: ______youyoungkim_______
+
 // quicksort.cpp by idebtor@gmail.com
 // A typical recursive implementation of quick sort
 // 2018.12.15
@@ -14,7 +17,7 @@ using namespace std;
 
 // This function takes last element as pivot, places the pivot element at its
 // correct position in sorted array, and places all smaller (smaller than pivot)
-// to left of pivot and all greater elements to right of pivot 
+// to left of pivot and all greater elements to right of pivot
 pNode partition(pNode lo, pNode hi, int(*comp)(int, int) = ascending) {
 	int x = hi->item;     // set pivot as hi value
 	pNode i = lo->prev;   // Index of smaller element
@@ -64,6 +67,7 @@ void bubbleSort(pList p, int(*comp)(int, int)) {
 		DPRINT(show(p, false););
 		tail = curr;
 	}
+
 	DPRINT(cout << "<bubbleSort N=" << size(p) << endl;);
 }
 
@@ -92,13 +96,22 @@ void bubbleSort2(pList p, int(*comp)(int, int)) {
 
 void selectionSort(pList p, int(*comp)(int, int)) {
 	DPRINT(cout << ">selectionSort N=" << size(p) << endl;);
+	if (sorted(p)) return reverse(p);
 
-	cout << "your code here\n";
+	pNode min;
+		for (pNode i = begin(p); i != end(p)->prev; i = i->next) {
+			min = i;
+			for (pNode j = i->next; j != end(p); j = j->next)
+				if (comp(min->item, j->item) > 0)
+					min = j;
+				swap(min->item, i->item);
+		}
 
 	DPRINT(cout << "<selctionSort N=" << size(p) << endl;);
 }
 
-/** for your reference 
+
+/** for your reference
 void selectionSort(int *list, int n) {
 	int min;
 	for (int i = 0; i < n - 1; i++) {
@@ -112,4 +125,3 @@ void selectionSort(int *list, int n) {
 	}
 }
 */
-

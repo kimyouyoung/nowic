@@ -33,15 +33,16 @@
  * OUTPUT:
  *		returns the array index of `key` in the list'
  *		returns -1 or something else?
- * NOTE: 
+ * NOTE:
  * If the key is not found, low is the insertion point where a key would be
  * inserted to maintain the order of the list.  It is more useful to return
  * the insertion point than -1.  The method must return a negative value to
- * indicate that the key is not in the list. Can it simply return -low? 
+ * indicate that the key is not in the list. Can it simply return -low?
  */
 
 #include <iostream>
 #include <iomanip>
+#include <cassert>
 using namespace std;
 
 #ifdef DEBUG
@@ -50,12 +51,21 @@ using namespace std;
 #define DPRINT(func) ;
 #endif
 
-int _binary_search(int *data, int key, int lo, int hi) {
+int _binary_search(int *data, int key, int lo, int end) {
 	DPRINT(cout << "key=" << key << " lo=" << lo << " hi=" << hi << endl;);
 
-	cout << "your code here \n";
+	int a = 0;
+	int index = 0;
+	for(int i = 0; i < end; i++){
+		if(data[i] == key){
+			index = i;
+			a++;
+		}else if(data[i] < key && data[i + 1] > key) index = i + 1;
+		else if(data[end - 1] < key) index = end - 1;
+	}
 
-	return 0;
+	if(a == 0) return -(index + 1);
+	else return index;
 }
 
 int binary_search(int *list, int key, int size) {
@@ -70,17 +80,27 @@ int main(int argc, char *argv[]) {
 	int list[] = { 3, 5, 6, 9, 11, 12, 15, 16, 18, 19, 20 };
 	int size = sizeof(list) / sizeof(list[0]);
 
+	int *random = new (nothrow) int[size];
+	assert(random != NULL);
+
 	cout << "list: ";
 	for (int i = 0; i < size; i++)
 		cout << list[i] << " ";
 	cout << endl;
 
 	// randomly generate numbers to search between
-	// list[0] = 3 and list[size-1] = 20, inclusviely. 
+	// list[0] = 3 and list[size-1] = 20, inclusviely.
 	// do this by 'size' times.
 	// print the results as shown in binsearchx.exe.
 
-	cout << "your code here \n";
+	for (int i = 0; i < size; i++)
+		random[i] = rand() % size;
+
+	for(int i = 0; i < size; i++){
+		int idx = binary_search(list, random[i], size);
+		if(idx < 0) cout << "\t" << random[i] << "\tis not @[" << -(idx + 1) << "]\n";
+		else cout << "\t" << random[i] << "\tis @[" << idx << "]\n";
+	}
 
 }
 #endif

@@ -95,6 +95,8 @@ void printList(int *list, int N, int max_print, int per_line){
 		// your code here
 		// Optionally, you may create a help function such as _printList()/
 
+		int number;
+
 		if(N <= max_print || max_print*2 >= N) number = N/2;
 		else number = max_print;
 
@@ -122,8 +124,6 @@ void printList(int *list, int N, int max_print, int per_line){
 			}
 		
 
-
-
 	DPRINT(cout << "<printList" << endl;)
 }
 
@@ -143,8 +143,10 @@ int main(int argc, char *argv[]) {
 	int  algorithm_chosen = SELECTION;  // default algorithm chosen
 	DPRINT(cout << ">main...N=" << N << endl;)
 
+
 	// Use setvbuf() to prevent the output from buffered on console.
 	setvbuf(stdout, NULL, _IONBF, 0);
+  void(*sortFn[])(int *, int) = { bubbleSort, insertionSort, quickSort, selectionSort };
 
 	do {
 		sprintf(option_str, "[sort=%s N=%d randomized=%c max_print=%d per_line=%d]",
@@ -167,7 +169,7 @@ int main(int argc, char *argv[]) {
 			switch (GetChar("\tEnter b for bubble, i for insertion, s for selection, q for quick sort: ")) {
 
 			// your code here
-			case 'b': algorithm_chosen = 0;
+      case 'b':	algorithm_chosen = 0;
 								break;
 
 			case 'i': algorithm_chosen = 1;
@@ -176,9 +178,8 @@ int main(int argc, char *argv[]) {
 			case 'q': algorithm_chosen = 2;
 								break;
 
-			case 's': algorithm_chosen = 3;
-								break;
-
+      case 's': algorithm_chosen = 3;
+          			break;
 
 			default: { cout << "\tNo such an algorithm available. Try it again.\n"; break; }
 			}
@@ -229,10 +230,7 @@ int main(int argc, char *argv[]) {
 			cout << "\tThe clock ticks and " << algorithm_list[algorithm_chosen] << " begins...\n";
 			start = clock();
 
-			if(algorithm_chosen == 0) bubbleSort(list, N);
-			else if(algorithm_chosen == 1)insertionSort(list, N);
-			else if(algorithm_chosen == 2) quickSort(list, N);
-			else if(algorithm_chosen == 3) selectionSort(list, N);
+			sortFn[algorithm_chosen](list, N);
 
 			printList(list, N, max_print, per_line);
 

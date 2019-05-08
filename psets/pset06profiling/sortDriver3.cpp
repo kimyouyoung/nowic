@@ -1,24 +1,9 @@
 /*
-* Lecture Note by idebtor@gmail.com
-*
-* This program is written to run the sort algorithms.
-* It takes the number of data samples to sort from the user.
-* Then, the int array is created and filled with random numbers.
-* User may selection one of sort functions to be used. Then
-* execution time and its output is displayed.
-*
-* History:
-* 02/10/19:		Created in C++
-*
-* Before Compilation, you must have some files (static library and
-* include file) ready as shown below:
-*   src/selection.cpp, bubble.cpp ...
-*   include/nowic.h
-*	lib/libnowic.a        (nowic.lib for Visual Studio)
-* Compilation:
-*	g++ selection.cpp insertion.cpp quicksort.cpp bubble.cpp
-*       sortDriver.cpp -I../include -L../lib -lnowic -o sort
+* On my honour, I pledge that I have neither received nor provided improper
+* assistance in the completion of this assignment.
+* Signed: ______youyoungkim_______   Section: ___03____   Student Number: ________21800147_________
 */
+
 
 #include <cstdlib>
 #include <ctime>
@@ -29,10 +14,14 @@
 
 using namespace std;
 
+const int STARTING_SAMPLES = 100;
+
 void bubbleSort(int *list, int n);
 void insertionSort(int *list, int n);
 void quickSort(int *list, int n);
 void selectionSort(int *list, int n);
+
+void sortProfiling(void (*sortFunc)(int *, int), int *list, int n,  int starting_samples = STARTING_SAMPLES);
 
 void printList(int *list, int n, int max_print, int per_line);
 void randomize(int list[], int n);
@@ -94,35 +83,45 @@ void printList(int *list, int N, int max_print, int per_line){
 
 		// your code here
 		// Optionally, you may create a help function such as _printList()/
+		int number;
 
-		if(N <= max_print || max_print*2 >= N) number = N/2;
-		else number = max_print;
-
-
-			int a = 0;
-			for(int i = 0; i < number; i++){
-				if(i == 0) cout << "\t";
-				cout << list[i] << "\t";
-				a++;
-				if(a % per_line == 0 && a != 0){
-					cout << endl << "\t";
+    if (max_print >= N / 2){
+      int a = 0;
+			for(int i = 0; i < N; i++){
+        a++;
+				cout << setw(10) << list[i];
+				if(a == per_line){
+					a = 0;
+          cout << endl;
 				}
-
+			}
+			cout << endl;
+    }
+  	else {
+      if (max_print >= N) max_print = N / 2;
+  		number = N - max_print;
+      int a = 0;
+			for(int i = 0; i < max_print; i++){
+        a++;
+				cout << setw(10) << list[i];
+				if(a == per_line){
+					a = 0;
+          cout << endl;
+				}
 			}
 			cout << endl;
 
-			int b = 0;
-			for(int i = N - number; i < N; i++){
-				if(i == number) cout << "\t";
-				cout << list[i] << "\t";
-				b++;
-				if(b % per_line == 0 && b != 0){
-					cout << endl << "\t";
+      a = 0;
+			for(int i = number; i < N; i++){
+				a++;
+        cout << setw(10) << list[i];
+				if(a == per_line){
+					a = 0;
+          cout << endl;
 				}
 			}
-		
-
-
+      cout << endl;
+  	}
 
 	DPRINT(cout << "<printList" << endl;)
 }
@@ -140,21 +139,24 @@ int main(int argc, char *argv[]) {
 	char option_str[512];
 	char algorithm_list[4][20] = {"Bubble", "Insertion", "Quicksort", "Selection"};
 	enum algorithm_enum { BUBBLE, INSERTION, QUICKSORT, SELECTION };
-	int  algorithm_chosen = SELECTION;  // default algorithm chosen
+	int  algorithm_chosen = SELECTION;  // default algorithm chosenconst int STARTING_SAMPLES = 100;
 	DPRINT(cout << ">main...N=" << N << endl;)
+
 
 	// Use setvbuf() to prevent the output from buffered on console.
 	setvbuf(stdout, NULL, _IONBF, 0);
+  void(*sortFn[])(int *, int) = { bubbleSort, insertionSort, quickSort, selectionSort };
 
 	do {
 		sprintf(option_str, "[sort=%s N=%d randomized=%c max_print=%d per_line=%d]",
 			algorithm_list[algorithm_chosen], N, randomized, max_print, per_line);
 		cout << "\n\tOPTIONS: " << option_str << "\n"
 			"\tn - number of samples size and initialize\n"
-			"\tr - randomize(shuffle) samples\n"
-			"\ta - algorithm to run\n"
-			"\ts - sort()\n"
-			"\tm - max samples to display at front or rear\n"
+			"\tr - randomize(shuffle) input samples\n"
+      "\ta - algorithm to run\n"
+      "\ts - sort()\n"
+      "\tp - profiling\n"
+      "\tm - max samples to display per front or rear\n"
 			"\td - max samples to display per line\n";
 
 
@@ -167,7 +169,7 @@ int main(int argc, char *argv[]) {
 			switch (GetChar("\tEnter b for bubble, i for insertion, s for selection, q for quick sort: ")) {
 
 			// your code here
-			case 'b': algorithm_chosen = 0;
+      case 'b':	algorithm_chosen = 0;
 								break;
 
 			case 'i': algorithm_chosen = 1;
@@ -176,9 +178,8 @@ int main(int argc, char *argv[]) {
 			case 'q': algorithm_chosen = 2;
 								break;
 
-			case 's': algorithm_chosen = 3;
-								break;
-
+      case 's': algorithm_chosen = 3;
+          			break;
 
 			default: { cout << "\tNo such an algorithm available. Try it again.\n"; break; }
 			}
@@ -229,16 +230,24 @@ int main(int argc, char *argv[]) {
 			cout << "\tThe clock ticks and " << algorithm_list[algorithm_chosen] << " begins...\n";
 			start = clock();
 
-			if(algorithm_chosen == 0) bubbleSort(list, N);
-			else if(algorithm_chosen == 1)insertionSort(list, N);
-			else if(algorithm_chosen == 2) quickSort(list, N);
-			else if(algorithm_chosen == 3) selectionSort(list, N);
+			sortFn[algorithm_chosen](list, N);
 
 			printList(list, N, max_print, per_line);
 
 			end = clock();
 			cout << endl << "\tDuration: " << (end - start) / (double)CLOCKS_PER_SEC << " seconds\n";
 			break;
+
+    case 'p': DPRINT(cout << "case = " << option_char << endl;)
+
+      if (N <= 0) {
+        cout << "\tFor profiling, set sample size > 100\n";
+        break;
+      }
+
+      sortProfiling(sortFn[algorithm_chosen], list, N, STARTING_SAMPLES);
+
+  		break;
 
 		case 'm': DPRINT(cout << "case = " << option_char << endl;)
 

@@ -8,9 +8,9 @@
 // Project Properties -> C/C++ -> Command Line -> Additonal Options
 
 #include <iostream>
-#include <sstream>
-#include <string>
+#include <cstdlib>
 
+#define MAX_SIZE 100
 
 void selectionSort(int[], int);
 
@@ -18,14 +18,8 @@ void selectionSort(int[], int);
 int main(void) {
 	int i, n;
 	int *list;
-	int max;
-	int num;
 	using namespace std;
 
-	cout << "Enter the Max_number of samples: ";
-	cin >> max;
-	cout << "Enter the range of random numbers: ";
-	cin >> num;
 
 	while(1){
 		cout << "Enter the number of samples: ";
@@ -33,7 +27,7 @@ int main(void) {
 
 		if(n == 0)
 			exit(1);
-		else if(n > 0 && n <= max)
+		else if(n > 0 && n <= MAX_SIZE)
 			break;
 
 		cout << "Error! Enter a number between 1 to 100" << endl;
@@ -43,7 +37,7 @@ int main(void) {
 
 	cout << endl << "UnSorted array:" << endl;
 	for (i = 0; i < n; i++) {       // randomly generate numbers
-		list[i] = rand() % num;
+		list[i] = rand() % 1000;
 		cout << list[i] << " ";
 	}
 

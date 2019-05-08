@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 			"\t10. Recursive Binary Search\n";
 
 		switch (option = GetInt("\tCommand(0 to quit): ")) {
-		case 0: 
+		case 0:
 			cout << "Happy Coding~~\n";
 			exit(EXIT_SUCCESS);
 
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 			break;
 		case 4:
 			cout << "\tbunnyEars(0) = 0\n";
-			cout << "\tbunnyEars(1) = 2\n"; 
+			cout << "\tbunnyEars(1) = 2\n";
 			cout << "\tbunnyEars(2) = 4\n";
 			cout << "\tbunnyEars(3) = 6\n";
 			cout << "\tbunnyEars(234) = 468\n";
@@ -119,22 +119,74 @@ int main(int argc, char *argv[]) {
 			}
 			break;
 		case 5:
-			cout << "your code here\n";
+			cout << "\tfunnyEars(0) = 0\n";
+			cout << "\tfunnyEars(1) = 2\n";
+			cout << "\tfunnyEars(2) = 5\n";
+			cout << "\tfunnyEars(3) = 7\n";
+			cout << "\tfunnyEars(4) = 10\n";
+			cout << "\tfunnyEars(9) = 22\n";
+			while (1) {
+				N = GetInt("\tEnter a number of funnies(0 to quit): ");
+				if (N <= 0) break;
+				cout << "\tfunnyEars(" << N << ") = " << funnyEars(N) << endl;
+			}
 			break;
 		case 6:
-			cout << "your code here\n";
+			cout << "\ttriangle(0) = 0\n";
+			cout << "\ttriangle(1) = 1\n";
+			cout << "\ttriangle(2) = 3\n";
+			cout << "\ttriangle(3) = 6\n";
+			cout << "\ttriangle(4) = 10\n";
+			cout << "\ttriangle(7) = 28\n";
+			while (1) {
+				N = GetInt("\tEnter a number of rows(0 to quit): ");
+				if (N <= 0) break;
+				cout << "\ttriangle(" << N << ") = " << triangle(N) << endl;
+			}
 			break;
 		case 7:
-			cout << "your code here\n";
+			cout << "\tsumDigits(1) = 1\n";
+			cout << "\tsumDigits(12) = 3\n";
+			cout << "\tsumDigits(126) = 9\n";
+			cout << "\tsumDigits(235) = 10\n";
+			cout << "\tsumDigits(1000) = 1\n";
+			cout << "\tsumDigits(10110) = 3\n";
+			while (1) {
+				N = GetInt("\tEnter a number of n(0 to quit): ");
+				if (N <= 0) break;
+				cout << "\tsumDigits(" << N << ") = " << sumDigits(N) << endl;
+			}
 			break;
 		case 8:
-			cout << "your code here\n";
+			cout << "\tcount8(8) = 1\n";
+			cout << "\tcount8(9) = 0\n";
+			cout << "\tcount8(123) = 0\n";
+			cout << "\tcount8(881238) = 3\n";
+			cout << "\tcount8(48581) = 2\n";
+			cout << "\tcount8(888586198) = 5\n";
+			while (1) {
+				N = GetInt("\tEnter a number of n(0 to quit): ");
+				if (N <= 0) break;
+				cout << "\tcount8(" << N << ") = " << count8(N) << endl;
+			}
 			break;
 		case 9:
-			cout << "your code here\n";
+			cout << "\tpowerN(2, 5) = 32\n";
+			cout << "\tpowerN(3, 1) = 3\n";
+			cout << "\tpowerN(3, 2) = 9\n";
+			cout << "\tpowerN(3, 3) = 27\n";
+			cout << "\tpowerN(10, 2) = 100\n";
+			cout << "\tpowerN(10, 3) = 1000\n";
+			while (1) {
+				int x = GetInt("\tEnter 1st number to compute powerN(0 to quit): ");
+				if (x == 0) break;
+				int y = GetInt("\tEnter 2nd number to compute powerN(0 to quit): ");
+				if (y == 0) break;
+				cout << "\tpowerN(" << x << ", " << y << ") = " << powerN(x, y) << endl;
+			}
 			break;
 
-		case 10:   
+		case 10:
 			cout << "\tRecursive Binary Search\n ";
 			while (1) {
 				N = GetInt("\tEnter a list size to generate(0 to quit) : ");
@@ -147,17 +199,19 @@ int main(int argc, char *argv[]) {
 					list[i] = rand() % N;
 
 				quickSort(list, N);
-				for (int i = 0; i < N; i++)
+				for (int i = 0; i < N; i++){
+					if(i == 0) cout << "\t";
 					cout << list[i] << " ";
+				}
 				cout << endl;
 
 				int key = GetInt("\tEnter a number to search: ");
 				int index = binary_search(list, key, N);
 
-				cout << "index=" << index << endl;
-				cout << "your code here to replace the line above.\n";
+				if(index < 0) cout << "\t" << key << "\tis not @[" << -(index + 1) << "]\n";
+				else cout << "\t" << key << "\tis @[" << index << "]\n";
 
-				delete list;
+				delete[] list;
 			}
 		default:
 			break;

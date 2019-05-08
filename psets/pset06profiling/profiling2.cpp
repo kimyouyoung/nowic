@@ -1,43 +1,9 @@
-/**
+/*
 * On my honour, I pledge that I have neither received nor provided improper
 * assistance in the completion of this assignment.
 * Signed: ______youyoungkim_______   Section: ___03____   Student Number: ________21800147_________
-*
-* Author:		Youngsup Kim
-* Description:	This program profiles the complexity of sorting algorithms.
-* It uses a for loop to control the size of the array. At each iteration, a
-* new randomly ordered array of n numbers is created. In order to do more
-* accurate timing, for each n, it do the sort as many times as needed to
-* bring the total time up to 1 second (1000 ticks).
-
-* This program uses clock(), not difftime() and time().
-
-* The time complexity of the selection sort and quick sort is O(n^^2)
-* and O(n log n), respectively. This program compares the elapsed time of
-* sort algorithm with the theoretical upper bound O(n^^2) of the selection sort
-* and O(n log n) of Quick Sort.  When it computes the elapsed time of O(n^^2)
-* and O(n log n), you may use Math functions as necessary. It assumes that the
-* elapsed times for all three cases are exactly the same to begin with for
-* STARTING_SAMPLES 100.  Once the elapsed time of the selection sort for
-* STARTING_SAMPLES is got, it is set to those for O(n^^2) and O(n log n).
-*
-* History:
-* 15/09/10:		Created
-* 19/02/20:		C++
-*
-* Compilation:	g++ selection.cpp profiling.cpp -o profiling
-* Execution:	profiling 30000
-*
-* See Also:
-* There is a profiling tool provided by gcc compiler. To obtain a profie
-* report, compile the program with -pg option as shown below:
-* > g++ -pg -o program program.cpp
-*
-* Then run the program. Running the program creates the file gmon.out,
-* which can be viewed as follows:
-* > gprof your_program
-*
 */
+
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -93,20 +59,38 @@ void getRandomSample(int list[], int size) {
 }
 
 //////////////// Step 4: your code here ////////////////////////////////////
-/*
+
 void sortProfiling(void (*sortFunc)(int *, int), int *list, int n,
 int starting_samples = STARTING_SAMPLES)
 {
+  double duration;
+	cout << "         n\t repetitions\t   sort(sec)\n";
+	for (int i = STARTING_SAMPLES; i <= n; i += getStep(i)) {
+		long repetitions = 0;
+		clock_t start = clock();
+		do {
+			repetitions++;
+			getRandomSample(list, i);			// shuffle the array
+			sortFunc(list, i);
+		} while (clock() - start < 1000);		// run it over one sec
 
+		duration = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+		duration /= repetitions;
+
+		cout << fixed;
+		cout << setw(10) << i << "\t"
+			<< setw(12) << repetitions << "\t"
+			<< setw(12) << duration << endl;
+    }
 
 }
-*/
+
 
 
 /////////////////////////////////////////////////////////////////////////////
 ////// Step 5: Turn off this main() and use one in sortDriver3.cpp //////////
 /////////////////////////////////////////////////////////////////////////////
-#if 1
+#if 0
 int main(int argc, char *argv[]) {
 	int N = 0;
 	int *list;
@@ -137,28 +121,11 @@ int main(int argc, char *argv[]) {
 	cout << "The maximum sample data size is " << N << "\n";
 	list = new int[N];
 
-	double duration;
-	cout << "         n\t repetitions\t   sort(sec)\n";
-	for (int i = STARTING_SAMPLES; i <= N; i += getStep(i)) {
-		long repetitions = 0;
-		clock_t start = clock();
-		do {
-			repetitions++;
-			getRandomSample(list, i);			// shuffle the array
-			//selectionSort(list, i);
-			quickSort(list, i);
-		} while (clock() - start < 1000);		// run it over one sec
+  //sortProfiling(selectionSort, list, N, STARTING_SAMPLES);
+  sortProfiling(quickSort, list, N, STARTING_SAMPLES);
 
-		duration = ((double)(clock() - start)) / CLOCKS_PER_SEC;
-		duration /= repetitions;
-
-		cout << fixed;
-		cout << setw(10) << i << "\t"
-			<< setw(12) << repetitions << "\t"
-			<< setw(12) << duration << endl;
-	}
-
-	delete list;
+	delete[] list;
 	return 0;
+
 }
 #endif

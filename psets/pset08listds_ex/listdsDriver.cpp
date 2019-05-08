@@ -24,13 +24,13 @@ int main(int argc, char **argv) {
 	char c;
 	int val, x, N;
 	clock_t start = 0;
-	bool show_all = false;  // toggle the way of showing values 
+	bool show_all = false;  // toggle the way of showing values
 	pList p = new List;		// create an empty list with two sentinel nodes
 
 	do {
 		cout << "\n\tDoubly Linked List(N=" << size(p) << ")\n";
-		cout << "\tf - push front   O(1)\t";		cout << "\tp - pop front   O(1)\n";		
-		cout << "\tb - push back    O(1)\t"; 		cout << "\ty - pop back    O(1)\n";		
+		cout << "\tf - push front   O(1)\t";		cout << "\tp - pop front   O(1)\n";
+		cout << "\tb - push back    O(1)\t"; 		cout << "\ty - pop back    O(1)\n";
 		cout << "\ti - push         O(n)\t"; 		cout << "\td - pop         O(n)\n";
 		cout << "\tz - push sorted* O(n)\t";		cout << "\te - pop vals*   O(n)\n";
 		cout << "\n";
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 		cout << "\tB - push backN   O(n)\t";  		cout << "\tS - push sortedN O(n^2)\n";
 		cout << "\tY - pop  backN   O(n)\t";		cout << "\tZ - push sortedN O(n log n)***\n";
 		c = GetChar("\tCommand[q to quit]: ");
-		
+
 		switch (c) {	// execute the command
 		case 'f':
 		case 'b':
@@ -136,8 +136,8 @@ int main(int argc, char **argv) {
 
 		case 't': // toggle the way of showing
 			show_all ? show_all = false : show_all = true;
-			break;		
-		
+			break;
+
 		case 'c':
 			if (empty(p)) break;
 			start = clock();

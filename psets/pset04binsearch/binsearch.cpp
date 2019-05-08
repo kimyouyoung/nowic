@@ -42,6 +42,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <cassert>
 using namespace std;
 
 #ifdef DEBUG
@@ -50,17 +51,19 @@ using namespace std;
 #define DPRINT(func) ;
 #endif
 
-int _binary_search(int *data, int key, int lo, int hi) {
+int _binary_search(int *data, int toFind, int start, int end) {
 	DPRINT(cout << "key=" << key << " lo=" << lo << " hi=" << hi << endl;);
 
-	cout << "your code here \n";
-
-	return 0;
+	int mid = (start + end) / 2;
+	if(start > end) return -(start + 1);
+  if(data[mid] == toFind) return mid;
+	else if(data[mid] > toFind) return _binary_search(data, toFind, start, mid - 1);
+	else if(data[mid] < toFind) return _binary_search(data, toFind, mid + 1, end);
 }
 
-int binary_search(int *list, int key, int size) {
-	DPRINT(cout << ">binary_search: key=" << key << " size=" << size << endl;);
-	int answer = _binary_search(list, key, 0, size);
+int binary_search(int *list, int toFind, int size) {
+	DPRINT(cout << ">binary_search: toFind=" << toFind << " size=" << size << endl;);
+	int answer = _binary_search(list, toFind, 0, size);
 	DPRINT(cout << "<binary_search: answer=" << answer << endl;);
 	return answer;
 }
@@ -69,6 +72,9 @@ int binary_search(int *list, int key, int size) {
 int main(int argc, char *argv[]) {
 	int list[] = { 3, 5, 6, 9, 11, 12, 15, 16, 18, 19, 20 };
 	int size = sizeof(list) / sizeof(list[0]);
+
+	int *random = new (nothrow) int[size];
+	assert(random != NULL);
 
 	cout << "list: ";
 	for (int i = 0; i < size; i++)
@@ -80,7 +86,14 @@ int main(int argc, char *argv[]) {
 	// do this by 'size' times.
 	// print the results as shown in binsearchx.exe.
 
-	cout << "your code here \n";
+	for (int i = 0; i < size; i++)
+		random[i] = rand() % size;
+
+	for(int i = 0; i < size; i++){
+		int idx = binary_search(list, random[i], size);
+		if(idx < 0) cout << "\t" << random[i] << "\tis not @[" << -(idx + 1) << "]\n";
+		else cout << "\t" << random[i] << "\tis @[" << idx << "]\n";
+	}
 
 }
 #endif
