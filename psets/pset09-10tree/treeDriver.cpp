@@ -28,7 +28,7 @@ using namespace std;
 void treeprint(tree root);				// print tree on console graphically
 void treeprint_levelorder(tree root);	// print tree in levelorder
 
-// returns a tree built by command-line arguments, for example 5 7 3 8 2 6 4 
+// returns a tree built by command-line arguments, for example 5 7 3 8 2 6 4
 tree build_tree_by_args(int argc, char *argv[], bool AVLtree) {
 	if (argc <= 1) return nullptr;
 	tree root = nullptr;
@@ -39,9 +39,9 @@ tree build_tree_by_args(int argc, char *argv[], bool AVLtree) {
 	for (int i = 0; i < argc - 1; i++)
 		bin[i] = strtol(argv[i + 1], nullptr, 10);
 
-	// using a function pointer 
+	// using a function pointer
 	tree (*func)(tree, int) = AVLtree ? growAVL : grow;
-	for (int i = 0; i < (argc - 1); i++) 
+	for (int i = 0; i < (argc - 1); i++)
 		root = func(root, bin[i]);
 
 	delete[] bin;
@@ -51,19 +51,19 @@ tree build_tree_by_args(int argc, char *argv[], bool AVLtree) {
 string treespecs(tree root) {
 	if (root == nullptr) return "";
 	stringstream ss;
-	ss << "mn:" << value(minimum(root)) << " mx:" << value(maximum(root)) 
+	ss << "mn:" << value(minimum(root)) << " mx:" << value(maximum(root))
 	   << " sz:" << size(root) << " ht:" << height(root);
 	return ss.str();
 }
 
 void treeprint_mode(tree root, int mode) {
 	if (root == nullptr) return;
-	if (mode == 0) 
+	if (mode == 0)
 		treeprint(root);
 	else if (mode == 1)
 		treeprint_levelorder(root);
 	else {
-		treeprint(root); 
+		treeprint(root);
 		cout << endl;
 		treeprint_levelorder(root);
 	}
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 		treeprint_mode(root, printMode);
 
 		cout << "\n\t" << (AVLtree ? menuAVL : menuBST) << treespecs(root) << endl;
-		cout << "\tg - grow\t"; 				
+		cout << "\tg - grow\t";
 		(AVLtree ? cout << "\tb - rebalance\n": cout << "\ta - add a child(Use with caution)\n");
 		cout << "\tt - trim\t"; 				cout << "\tf - find\n";
 		if (!AVLtree) cout << "\t/ - trim plus\n";
@@ -109,14 +109,14 @@ int main(int argc, char **argv) {
 				cout << "\tEnter a key(" << key << ") is not found.\n";
 				break;
 			}
-			
+
 			if (degree(node) == 2) {
 				cout << "\tThis subtree(" << key << ") is full.\n";
 				break;
 			}
-		
+
 			item = GetInt("\tEnter a key to grow: ");
-			if (containsBT(root, item)) 
+			if (containsBT(root, item))
 				cout << "\tThis key(" << item << ") is already in the tree.\n";
 			else
 				grow(node, item);
@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
 		case 'p': // predecessor and successor // BST/AVL
 			if (empty(root)) break;
 			node = pred(root);
-			if (node) 
+			if (node)
 				cout << "\n\tPredecessor: " << value(node);
 			else
 				cout << "\n\tPredecessor: undefined";
@@ -168,14 +168,14 @@ int main(int argc, char **argv) {
 			break;
 
 		case 'l': // list nodes // BT/BST/AVL
-			cout << "\n\tinorder:    "; vec.clear(); inorder(root, vec); 
-										for (int i : vec) cout << i << " "; 
-			cout << "\n\tpreorder:   "; vec.clear(); preorder(root, vec); 
+			cout << "\n\tinorder:    "; vec.clear(); inorder(root, vec);
 										for (int i : vec) cout << i << " ";
-			cout << "\n\tpostorder:  "; vec.clear(); postorder(root, vec); 
+			cout << "\n\tpreorder:   "; vec.clear(); preorder(root, vec);
 										for (int i : vec) cout << i << " ";
-			cout << "\n\tlevelorder: "; vec.clear(); levelorder(root, vec); 
-										for (int i : vec) cout << i << " ";		
+			cout << "\n\tpostorder:  "; vec.clear(); postorder(root, vec);
+										for (int i : vec) cout << i << " ";
+			cout << "\n\tlevelorder: "; vec.clear(); levelorder(root, vec);
+										for (int i : vec) cout << i << " ";
 			break;
 		case 'o': // BT/BST/AVL
 			if (empty(root)) break;
@@ -226,5 +226,3 @@ int main(int argc, char **argv) {
 	cout << "\n\tJoyful Coding!\n";
 	return EXIT_SUCCESS;
 }
-
-
