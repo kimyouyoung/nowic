@@ -1,4 +1,7 @@
 /**
+* On my honour, I pledge that I have neither received nor provided improper assistance
+* in the completion of this assignment. Signed: ______youyoungkim_______
+*
 * File: tree.cpp, tree.h
 * implements a binary tree and/or binary search tree(BST).* and
 * AVL(Adelson-Velskii and Landis) tree.
@@ -35,8 +38,8 @@
 #include <iostream>
 #include <cassert>
 #include <vector>
+#include <queue>
 #include "tree.h"
-//#include "treeque.h"		    // used only in levelorder
 using namespace std;
 
 void treeprint(tree t);        // print the tree on console graphically
@@ -55,20 +58,18 @@ int degree(tree t) {
 int height(tree node) {
 	if (empty(node)) return 0;
 	// compute the depth of each subree and return the larger one.
+	int left = height(node->left);
+	int right = height(node->right);
 
-	cout << "your code here\n";
-
-	return 0;
+	if(left >= right) return 1 + left;
+	else return 1 + right;
 }
 
 // Computes the size of the binary tree dyamically by
 // traversing the nodes recursively.
 int size(tree node) {
 	if (node == nullptr) return 0;
-
-	cout << "your code here\n";
-
-	return 1;
+	return 1 + size(node->left) + size(node->right);
 }
 
 bool empty(tree t) {
@@ -83,9 +84,7 @@ int value(tree t) {
 // frees all nodes while traversing the tree like postorder
 tree clear(tree t) {
 	if (t == nullptr) return nullptr;
-
-	cout << "your code here\n";
-
+	if(t->left != nullptr)
 	return nullptr;
 }
 
@@ -94,9 +93,10 @@ tree clear(tree t) {
 bool contains(tree node, int key) {
 	if (empty(node)) return false;
 
-	cout << "your code here\n";
+	if(key == node->key) return true;
+	if(key < node->key) return contains(node->left, key);
+	else return contains(node->right, key);
 
-	return true;
 }
 
 // does there exist a node with given key?
@@ -203,20 +203,25 @@ tree pred(tree node) {
 // Given a binary search tree, return the min or max key in the tree.
 // Don't need to traverse the entire tree.
 tree maximum(tree node) {			// returns max node
-	cout << "your code here\n";
-	return nullptr;
+	if(node->right == nullptr) return node;
+	return maximum(node->right);
 }
 
 tree minimum(tree node) {			// returns min node
-	cout << "your code here\n";
-	return nullptr;
+	if(node->left == nullptr) return node;
+	return minimum(node->left);
 }
 
 // Given a binary tree, its node values in inorder are passed
 // back through the argument v which is passed by reference.
 void inorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">inorder size=" << v.size() << endl;);
-	cout << "your code here\n";
+	if(empty(node)) return;
+
+	inorder(node->left, v);
+	v.push_back(node->key);
+	inorder(node->right, v);
+
 	DPRINT(cout << "<inorder key=" << node->key << endl;);
 }
 
@@ -224,7 +229,12 @@ void inorder(tree node, vector<int>& v) {
 // back through the argument v which is passed by reference.
 void postorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">postorder size=" << v.size() << endl;);
-	cout << "your code here\n";
+	if(empty(node)) return;
+
+	postorder(node->left);
+	postorder(node->right);
+	v.push_back(node->key);
+
 	DPRINT(cout << "<postorder key=" << node->key << endl;);
 }
 
@@ -232,7 +242,12 @@ void postorder(tree node, vector<int>& v) {
 // back through the argument v which is passed by reference.
 void preorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">preorder size=" << v.size() << endl;);
-	cout << "your code here\n";
+	if(empty(node)) return;
+
+	v.push_back(node->key);
+	preorder(node->left);
+	preorder(node->right);
+
 	DPRINT(cout << "<preorder key=" << node->key << endl;);
 }
 
@@ -257,7 +272,10 @@ bool _isBST(tree x, int min, int max) {
 	if (x == nullptr) return true;
 	DPRINT(cout << ">_isBST key=" << x->key << "\t min=" << min << " max=" << max << endl;);
 
-	cout << "your code here\n";
+	if(x->key < min || x->key > max) return false;
+
+	if(_isBST(x->left, min-1, x->key) && _isBST(x->right, x->key, max+1))
+		return true;
 
 	DPRINT(cout << "<_isBST key=" << x->key << "\t min=" << min << " max=" << max << endl;);
 	return false;
@@ -269,6 +287,7 @@ bool isBST(tree root) {
 
 	int min = value(minimum(root));
 	int max = value(maximum(root));
+
 	return _isBST(root, min-1, max+1);    // to check the same key add -/+ 1
 }
 
