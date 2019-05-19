@@ -61,7 +61,7 @@ int height(tree node) {
 	int left = height(node->left);
 	int right = height(node->right);
 
-	if(left >= right) return 1 + left;
+	if(left > right) return 1 + left;
 	else return 1 + right;
 }
 
@@ -84,7 +84,10 @@ int value(tree t) {
 // frees all nodes while traversing the tree like postorder
 tree clear(tree t) {
 	if (t == nullptr) return nullptr;
-	if(t->left != nullptr)
+	if(t->left != nullptr) return clear(t->left);
+	delete t;
+	if(t->right != nullptr) return clear(t->right);
+
 	return nullptr;
 }
 
@@ -231,8 +234,8 @@ void postorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">postorder size=" << v.size() << endl;);
 	if(empty(node)) return;
 
-	postorder(node->left);
-	postorder(node->right);
+	postorder(node->left, v);
+	postorder(node->right, v);
 	v.push_back(node->key);
 
 	DPRINT(cout << "<postorder key=" << node->key << endl;);
@@ -245,8 +248,8 @@ void preorder(tree node, vector<int>& v) {
 	if(empty(node)) return;
 
 	v.push_back(node->key);
-	preorder(node->left);
-	preorder(node->right);
+	preorder(node->left, v);
+	preorder(node->right, v);
 
 	DPRINT(cout << "<preorder key=" << node->key << endl;);
 }
