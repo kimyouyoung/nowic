@@ -144,12 +144,27 @@ int main(int argc, char **argv) {
 				cout << "\tThis subtree(" << key << ") is full.\n";
 				break;
 			}
+<<<<<<< HEAD
 
 			item = GetInt("\tEnter a key to grow: ");
 			if (containsBT(root, item))
 				cout << "\tThis key(" << item << ") is already in the tree.\n";
 			else
 				grow(node, item);
+=======
+			
+			while (true) {
+				item = GetInt("\tEnter a key to grow: ");
+				if (containsBT(root, item))
+					cout << "\tThis key(" << item << ") is already in the tree.\n";
+				else
+					break;
+			}
+			if (node->left == nullptr) 
+				node->left = new TreeNode(item);
+			else if (node->right == nullptr)
+				node->right = new TreeNode(item);
+>>>>>>> nowic/master
 			break;
 
 		case 'b':  // rebalance
