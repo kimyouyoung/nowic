@@ -1,6 +1,7 @@
 /**
 * On my honour, I pledge that I have neither received nor provided improper assistance
-* in the completion of this assignment. Signed: ______youyoungkim_______
+* in the completion of this assignment.
+* Signed: ______youyoungkim_______ Section: ___03____   Student Number: ____21800147_____
 *
 * File: tree.cpp, tree.h
 * implements a binary tree and/or binary search tree(BST).* and
@@ -84,11 +85,12 @@ int value(tree t) {
 // frees all nodes while traversing the tree like postorder
 tree clear(tree t) {
 	if (t == nullptr) return nullptr;
-	if(t->left != nullptr) return clear(t->left);
-	delete t;
-	if(t->right != nullptr) return clear(t->right);
 
-	return t;
+	clear(t->left);
+	clear(t->right);
+	delete t;
+
+	return nullptr;
 }
 
 // does there exist a node with given key?
@@ -170,6 +172,8 @@ tree trim(tree node, int key) {
 	if (node == nullptr) return node;	 // base case
 	DPRINT(cout << ">trim: now we are at: " << node->key << endl;);
 
+	tree temp;
+
 	if (key < node->key) // if node to trim is in left subtree.
 		node->left = trim(node->left, key);
 	else if (key > node->key) // node to trim is in right subtree.
@@ -180,15 +184,21 @@ tree trim(tree node, int key) {
 			// copy the successor's content to this node
 			// trim the successor recursively starting at root->right
 			// root itself dose not change, but root->right may
+			temp = succ(node);
+			node->key = temp->key;
+			node->right = trim(node->right, node->key);
 		}
 		else if (node->left) {
 			// delete root, pass back root->left
-			cout << "your code here\n";
-
+			temp = node;
+			node = node->left;
+			delete temp;
 		}
 		else if (node->right) {
 			// delete root, pass back root->right
-			cout << "your code here\n";
+			temp = node;
+			node = node->right;
+			delete temp;
 		}
 		else {
 			delete node;
@@ -206,7 +216,46 @@ tree trimplus(tree node, int key) {
 	if (node == nullptr) return node;	 // base case
 	DPRINT(cout << ">trimplus: now we are at: " << node->key << endl;);
 
-	cout << "your code here\n";
+	tree temp;
+
+	if (key < node->key) // if node to trim is in left subtree.
+		node->left = trimplus(node->left, key);
+	else if (key > node->key) // node to trim is in right subtree.
+		node->right = trimplus(node->right, key);
+	else {
+		if (node->left && node->right) {
+			// get the successor: smallest in right subtree
+			// copy the successor's content to this node
+			// trim the successor recursively starting at root->right
+			// root itself dose not change, but root->right may
+			if(height(node->left) > height(node->right)){
+				temp = pred(node);
+				node->key = temp->key;
+				node->left = trimplus(node->left, node->key);
+			}
+			else{
+				temp = succ(node);
+				node->key = temp->key;
+				node->right = trimplus(node->right, node->key);
+			}
+		}
+		else if (node->left) {
+			// delete root, pass back root->left
+			temp = node;
+			node = node->left;
+			delete temp;
+		}
+		else if (node->right) {
+			// delete root, pass back root->right
+			temp = node;
+			node = node->right;
+			delete temp;
+		}
+		else {
+			delete node;
+			return nullptr;
+		}
+	}
 
 	DPRINT(if (node != nullptr) cout << "<trimplus returns: key=" << node->key << endl;);
 	DPRINT(if (node == nullptr) cout << "<trimplus returns: nullptr)\n";);
@@ -237,6 +286,17 @@ tree maximum(tree node) {			// returns max node
 tree minimum(tree node) {			// returns min node
 	if(node->left == nullptr) return node;
 	return minimum(node->left);
+}
+
+void inorder(tree node, vector<tree>& v){
+	DPRINT(cout << ">inorder size=" << v.size() << endl;);
+	if(empty(node)) return;
+
+	inorder(node->left, v);
+	v.push_back(node);
+	inorder(node->right, v);
+
+	DPRINT(cout << "<inorder key=" << node->key << endl;);
 }
 
 // Given a binary tree, its node values in inorder are passed
@@ -283,9 +343,18 @@ void preorder(tree node, vector<int>& v) {
 // Use std::queue to store the nodes during traverse the tree.
 void levelorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">levelorder";);
-	if (node == nullptr) return;
 
-	cout << "your code here\n";
+	queue<tree> que;
+
+	if (node == nullptr) return;
+	que.push(node);
+	while(!que.empty()){
+		tree temp = que.front();
+		v.push_back(temp->key);
+		que.pop();
+		if(temp->left != nullptr) que.push(temp->left);
+		if(temp->right != nullptr) que.push(temp->right);
+	}
 
 	DPRINT(cout << "<levelorder size=" << v.size() << endl;);
 }
@@ -301,7 +370,7 @@ bool _isBST(tree x, int min, int max) {
 
 	if(x->key < min || x->key > max) return false;
 
-	if(_isBST(x->left, min-1, x->key) && _isBST(x->right, x->key, max+1))
+	if(_isBST(x->left, min, (x->key)-1) && _isBST(x->right, (x->key)+1, max))
 		return true;
 
 	DPRINT(cout << "<_isBST key=" << x->key << "\t min=" << min << " max=" << max << endl;);
@@ -312,9 +381,15 @@ bool _isBST(tree x, int min, int max) {
 bool isBST(tree root) {  // fix the bug in this code
 	if (empty(root)) return true;
 
+	int min = -987654321;
+	int max = 987654321;
+
+	/*
 	int min = value(minimum(root));
 	int max = value(maximum(root));
-	return _isBST(root, min - 1, max + 1);    // to check the same key add -/+ 1
+	*/
+
+	return _isBST(root, min-1, max+1);    // to check the same key add -/+ 1
 }
 
 ///////////   testing code  ///////////////////////////////////////
@@ -384,9 +459,17 @@ tree growN(tree root, int N, bool AVLtree) {
 	randomN(arr, N, start);
 
 	// using a function pointer
+	/*
 	tree(*func)(tree root, int key) = AVLtree ? growAVL : grow;
 	for (int i = 0; i < N; i++)
 		root = func(root, arr[i]);
+	*/
+
+	for(int i = 0; i < N; i++)
+		root = grow(root, arr[i]);
+
+
+	if(AVLtree) root = rebalanceTree(root);
 
 	delete[] arr;
 	DPRINT(cout << "<growN size=" << size(root) << endl;);
@@ -407,9 +490,16 @@ tree trimN(tree root, int N, bool AVLtree) {
 	int count = N > tsize ? tsize : N;
 
 	// use function pointers
+	/*
 	tree (*func)(tree root, int key) = AVLtree ? trimAVL : trim;
 	for (int i = 0; i < count; i++)
 		root = func(root, vec[i]);
+	*/
+
+	for(int i = 0; i < count; i++)
+		root = trim(root, vec[i]);
+
+	if(AVLtree) root = rebalanceTree(root);
 
 	DPRINT(cout << "<trimN size=" << size(root) << endl;);
 	return root;
@@ -481,14 +571,25 @@ tree rotateRL(tree node) {
 tree rebalance(tree node) {
 	DPRINT(cout << ">rebalance at:" << node->key << endl;);
 
-	cout << "your code here\n";
+	int bf = balanceFactor(node);
+
+	if(bf >= 2){
+		if(balanceFactor(node->left) >= 1)
+			node = rotateLL(node);
+		else
+			node = rotateLR(node);
+	}
+	else if(bf <= -2){
+		if(balanceFactor(node) <= -1)
+			node = rotateRR(node);
+		else
+			node = rotateRL(node);
+	}
 
 #ifdef DEBUG
 	treeprint(node);
 	cout << " Need rebalancing at " << node->key << endl;
 #endif
-
-	cout << "your code here\n";
 
 	DPRINT(cout << "<rebalance returning" << endl;);
 	return node;
@@ -516,20 +617,48 @@ tree rebalanceTree(tree node) {
 	DPRINT(cout << ">rebalanceTree " << endl;);
 	if (node == nullptr) return nullptr;
 
-	cout << "your code here\n";
+	vector<tree> v;
+	inorder(node, v);
 
 	DPRINT(cout << "<rebalanceTree " << endl;);
-	return node;
+	return buildAVL(v.data(), v.size());
 }
 
+tree buildAVL(tree* v, int n){
+	if(n <= 0) return nullptr;
+	int mid = n / 2;
+
+	tree root = v[mid];
+
+	root->left = buildAVL(v, mid);
+	root->right = buildAVL(&v[mid+1], n-mid-1);
+
+	return root;
+}
+/*
+tree buildAVL(int* v, int n){
+	if(n <= 0) return nullptr;
+	int mid = n / 2;
+
+	tree root = new TreeNode(v[mid]);
+
+	root->left = buildAVL(v, mid);
+	root->right = buildAVL(&v[mid+1], n-mid-1);
+
+	return root;
+}
+*/
 // inserts a node in the AVL tree and rebalance it. O(log n)
 tree growAVL(tree node, int key) {
 	DPRINT(cout << ">growAVL key=" << key << endl;);
 	if (node == nullptr) return new TreeNode(key);
 
-	cout << "your code here\n";
+	if (key < node->key)	// recur down the tree
+		node->left = growAVL(node->left, key);
+	else if (key > node->key)
+		node->right = growAVL(node->right, key);
 
-	return nullptr;
+	return rebalance(node);
 }
 
 // removes a node with key in the AVL tree and rebalance it.
@@ -538,7 +667,41 @@ tree trimAVL(tree node, int key) {
 
 	// step 1 - BST trim as usual
 
-	cout << "your code here\n";
+	if (node == nullptr) return node;	 // base case
+
+	tree temp;
+
+	if (key < node->key) // if node to trim is in left subtree.
+		node->left = trimAVL(node->left, key);
+	else if (key > node->key) // node to trim is in right subtree.
+		node->right = trimAVL(node->right, key);
+	else {
+		if (node->left && node->right) {
+			// get the successor: smallest in right subtree
+			// copy the successor's content to this node
+			// trim the successor recursively starting at root->right
+			// root itself dose not change, but root->right may
+			temp = succ(node);
+			node->key = temp->key;
+			node->right = trimAVL(node->right, node->key);
+		}
+		else if (node->left) {
+			// delete root, pass back root->left
+			temp = node;
+			node = node->left;
+			delete temp;
+		}
+		else if (node->right) {
+			// delete root, pass back root->right
+			temp = node;
+			node = node->right;
+			delete temp;
+		}
+		else {
+			delete node;
+			return nullptr;
+		}
+	}
 
 	// step 2 - get balanced at this node
 	DPRINT(if (node != nullptr)
