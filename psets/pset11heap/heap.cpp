@@ -1,5 +1,5 @@
 /*
-* Files: heap.cpp, heap.h, heapDriver.cpp - min/maxheap 
+* Files: heap.cpp, heap.h, heapDriver.cpp - min/maxheap
 *        heapv.cpp, heapv.h, heapvDriver.cpp - using std::vector
 *  implements a max/min heap that is used to represent a priority queue.
 *
@@ -101,7 +101,7 @@ void reserve(heap p, int capa) {
 // inserts a new key to the max-heap or min-heap.
 void grow(heap p, int key) {
 	DPRINT(cout << ">grow key=" << key << endl;);
-	
+
 	cout << "your code here\n";
 
 	DPRINT(cout << "<grow N=" << p->N << endl;);
@@ -173,13 +173,25 @@ void swap(heap p, int i, int j) {
 
 void swim(heap p, int k) {
 	DPRINT(cout << " swim key=" << p->nodes[k] << " k=" << k << " N=" << p->N << endl;);
-	cout << "your code here\n";
+	while (k > 1 && less(p, k / 2, k)) {
+		swap(p, k / 2, k);
+		k = k / 2;
+	}
 }
 
 void sink(heap p, int k) {
 	DPRINT(cout << " sink key=" << p->nodes[k] << " k=" << k << " N=" << p->N << endl;);
 
-	cout << "your code here\n";
+	while (2 * k <= p->N) {
+		int j = 2 * k;
+
+		if (j < p->N && less(p, j, j + 1))
+			j++;
+		if (!less(p, k, j))
+			break;
+		swap(p, k, j);
+		k = j;
+	}
 
 #ifdef DEBUG
 	cout << "\tafter sink N=" << p->N << " k=" << endl;
@@ -193,7 +205,7 @@ void sink(heap p, int k) {
 *  Check integrity of maxheap data structure
 *************************************************************************/
 
-// is this[1..N] max-heap ordered at a node k? 
+// is this[1..N] max-heap ordered at a node k?
 bool heapOrderedAt(heap p, int k) {
 	if (k > p->N/2) return true; // check it upto the last internal node.
 
@@ -206,7 +218,7 @@ bool heapOrderedAt(heap p, int k) {
 	return heapOrderedAt(p, left) && heapOrderedAt(p, right);
 }
 
-// is this[1..N] heap ordered? 
+// is this[1..N] heap ordered?
 bool heapOrdered(heap p) {
 	if (empty(p)) return false;
 	return heapOrderedAt(p, 1);
@@ -255,7 +267,7 @@ void growCBT(heap p, int key) {
 // if the size becomes 1/4 of the capacity, reserve it in half.
 void trimCBT(heap p) {
 	DPRINT(cout << ">trimCBT " << endl;);
-	
+
 	cout << "your code here\n";
 
 	DPRINT(cout << "<trimCBT N=" << p->N << endl;);

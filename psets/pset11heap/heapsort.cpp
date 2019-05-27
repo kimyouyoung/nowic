@@ -41,7 +41,7 @@ typedef char Key;
 #define DPRINT(func) ;
 #endif
 
-// define a function pointer that accepts a Key array, int, int as arguments
+// define a function pointer that accepts a key array, int, int as arguments
 bool (*comp)(Key*, int, int);
 
 //////////// helper functions to restore the PQ invariant ///////////
@@ -52,11 +52,20 @@ bool more(Key* a, int i, int j) {
 	return a[i] > a[j];
 }
 
+void swap(Key* a, int i, int j) {
+	char temp = a[i];
+	a[i] = a[j];
+	a[j] = temp;
+}
+
 void swim(Key* a, int k, int N) {
 	DPRINT(cout << ">swim key=" << a[k] << " @ k=" << k << " N=" << N << endl;);
 	int k_saved = k;
 
-	cout << "your code here\n";
+	while(k > 1 && comp(a, k/2, k)){
+		swap(a, k/2, k);
+		k = k/2;
+	}
 
 	cout << "   N=" << N << " k=" << k_saved << " ";
 	for (int i = 1; i <= N; i++) cout << a[i] << " ";
@@ -67,7 +76,13 @@ void sink(Key * a, int k, int N) {
 	DPRINT(cout << ">sink key=" << a[k] << " @ k=" << k << " N=" << N << endl;);
 	int k_saved = k;
 
-	cout << "your code here\n";
+	while(2*k <= N){
+		int j = 2*k;
+		if(j < N && comp(a, j, j+1)) j++;
+		if(!comp(a, k, j)) break;
+		swap(a, k, j);
+		k = j;
+	}
 
 	cout << "   N=" << N << " k=" << k_saved << " ";
 	for (int i = 1; i <= N; i++) cout << a[i] << " ";
@@ -80,7 +95,8 @@ void heapsort(Key * a, int N) {
 	// start 'sink' at the last internal node and go up.
 	cout << "1st pass(heapify - O(n)) begins:\n";
 
-	cout << "your code here\n";
+	for(k = N/2; k >= 1; k--)
+		sink(a, k, N);
 
 	cout << "HeapOrdered: ";
 
@@ -90,13 +106,19 @@ void heapsort(Key * a, int N) {
 	// 2nd pass: get the max out (from root while N > 1)
 	// repeat 'swap and sink' at the root while decrementing N.
 	cout << "2nd pass(swap and sink - n * O(log n) begins:\n";
+	k = 1;
+	int size = N-1;
+	for(int i = 0; i < size; i++){
+		swap(a, k, N);
+		sink(a, k, --N);
+	}
 
-	cout << "your code here\n";
 }
 
 int grow(Key * a, Key key, int N) {
 
-	cout << "your code here\n";
+	a[++N] = key;
+	swim(a, N, N);
 
 	return N;
 }
@@ -111,8 +133,8 @@ void show(Key * a, int N) {
 // The first element(a[0]) is excluded.
 int main(int argc, char* argv[]) {
 #if 1
-	char a[] = { ' ', 'H', 'A', 'P', 'P', 'Y', 'C', 'O', 'D', 'I', 'N', 'G', NULL };
-	int N = sizeof(a) / sizeof(a[0]) - 2;   // -2 because of 1st ' ' and last NULL.
+	char a[] = { ' ', '2', '1', '8', '0', '0', '1', '4', '7', '\0', '\0' };
+	int N = sizeof(a) / sizeof(a[0]) - 3;   // -3 because of 1st ' ' and last two'\0'.
 #else
 	char a[1024], line[1024];
 	if (argc < 2) {
@@ -143,9 +165,9 @@ int main(int argc, char* argv[]) {
 	heapsort(a, N);
 	show(a, N);
 
-	cout << "\nGROWING: A, Z\n";
-	N = grow(a, 'A', N);
-	N = grow(a, 'Z', N);
+	cout << "\nGROWING: 3, 9\n";
+	N = grow(a, '3', N);
+	N = grow(a, '9', N);
 	show(a, N);
 
 	cout << "\nHappy coding~~\n";

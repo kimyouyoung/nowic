@@ -381,13 +381,8 @@ bool _isBST(tree x, int min, int max) {
 bool isBST(tree root) {  // fix the bug in this code
 	if (empty(root)) return true;
 
-	int min = -987654321;
-	int max = 987654321;
-
-	/*
 	int min = value(minimum(root));
 	int max = value(maximum(root));
-	*/
 
 	return _isBST(root, min-1, max+1);    // to check the same key add -/+ 1
 }

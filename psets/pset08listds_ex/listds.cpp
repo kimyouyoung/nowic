@@ -353,8 +353,8 @@ void shuffle(pList p) {
 		pNode m_next = mid->next;
 
 		que->prev = mid->prev;
-		mid->prev->next = mid->prev = que;
 		que->next = mid;
+		mid->prev->next = mid->prev = que;
 
 		mid = m_next;
 		que = q_next;
