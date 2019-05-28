@@ -39,7 +39,7 @@ typedef char Key;
 #define DPRINT(func) func;
 #else
 #define DPRINT(func) ;
-#endif
+#endif 
 
 // define a function pointer that accepts a key array, int, int as arguments
 bool (*comp)(Key*, int, int);
