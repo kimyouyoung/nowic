@@ -1,4 +1,8 @@
 /*
+* On my honour, I pledge that I have neither received
+* nor provided improper assistance in the completion of this assignment.
+* Signed: ______youyoungkim_______
+*
 * Files: heap.cpp, heap.h, heapDriver.cpp - min/maxheap
 *        heapv.cpp, heapv.h, heapvDriver.cpp - using std::vector
 *  implements a max/min heap that is used to represent a priority queue.
@@ -102,7 +106,11 @@ void reserve(heap p, int capa) {
 void grow(heap p, int key) {
 	DPRINT(cout << ">grow key=" << key << endl;);
 
-	cout << "your code here\n";
+	if((p->N)+1 == p->capacity)
+		reserve(p, 2*(p->capacity));
+	p->nodes[++(p->N)] = key;
+
+	swim(p, p->N);
 
 	DPRINT(cout << "<grow N=" << p->N << endl;);
 	return;
@@ -113,7 +121,12 @@ void trim(heap p) {
 	if (empty(p)) return;
 	DPRINT(cout << ">trim\n";);
 
-	cout << "your code here\n";
+	if((p->N)-1 < (p->capacity)/4)
+		reserve(p, (p->capacity)/2);
+
+	swap(p, 1, p->N);
+	p->N = --(p->N);
+	sink(p, 1);
 
 	DPRINT(cout << "<trim N=" << p->N << endl;);
 }
@@ -123,7 +136,9 @@ void trim(heap p) {
 int contains(heap p, int key) {
 	if (empty(p)) return 0;
 
-	cout << "your code here\n";
+	for(int i = 1; i <= p->N; i++){
+		if(p->nodes[i] == key) return i;
+	}
 
 	return 0;
 }
@@ -173,7 +188,7 @@ void swap(heap p, int i, int j) {
 
 void swim(heap p, int k) {
 	DPRINT(cout << " swim key=" << p->nodes[k] << " k=" << k << " N=" << p->N << endl;);
-	while (k > 1 && less(p, k / 2, k)) {
+	while (k > 1 && p->comp(p, k / 2, k)) {
 		swap(p, k / 2, k);
 		k = k / 2;
 	}
@@ -185,10 +200,8 @@ void sink(heap p, int k) {
 	while (2 * k <= p->N) {
 		int j = 2 * k;
 
-		if (j < p->N && less(p, j, j + 1))
-			j++;
-		if (!less(p, k, j))
-			break;
+		if (j < p->N && p->comp(p, j, j+1)) j++;
+		if (!p->comp(p, k, j)) break;
 		swap(p, k, j);
 		k = j;
 	}
@@ -230,7 +243,15 @@ bool heapOrdered(heap p) {
 void heapsort(heap p) {
 	DPRINT(cout << ">heapsort N=" << p->N << endl;);
 
-	cout << "your code here\n";
+	if(!heapOrdered(p))
+		heapify(p);
+
+	int temp = p->N;
+	while(p->N > 1){
+		swap(p, 1, (p->N)--);
+		sink(p, 1);
+	}
+	p->N = temp;
 
 	std::cout << "\n\tSorted: ";
 	for (int i = 1; i <= p->N; i++)
@@ -258,7 +279,14 @@ heap newCBT(int *a, int n) {
 void growCBT(heap p, int key) {
 	DPRINT(cout << ">growCBT key=" << key << endl;);
 
-	cout << "your code here\n";
+
+		if(empty(p)) p->nodes[++(p->N)] = key;
+		else{
+			if((p->N)+1 == p->capacity)
+				reserve(p, 2*(p->capacity));
+			p->nodes[++(p->N)] = key;
+		}
+
 
 	DPRINT(cout << "<growCBT N=" << p->N << endl;);
 }
@@ -268,7 +296,11 @@ void growCBT(heap p, int key) {
 void trimCBT(heap p) {
 	DPRINT(cout << ">trimCBT " << endl;);
 
-	cout << "your code here\n";
+	if(empty(p)) return;
+
+	if((p->N)-1 < (p->capacity)/4)
+		reserve(p, (p->capacity)/2);
+	p->N = --(p->N);
 
 	DPRINT(cout << "<trimCBT N=" << p->N << endl;);
 }
@@ -281,7 +313,8 @@ void heapify(heap p) {
 	// since leaf nodes already satisfy the max/min priority property
 	// This is O(n) algorithm
 
-	cout << "your code here\n";
+	for(int i = (p->N)/2; i >= 1; i--)
+		sink(p, i);
 
 	DPRINT(cout << "<heapify" << endl;);
 }
@@ -290,6 +323,7 @@ void heapify(heap p) {
 // between start to start + N
 void randomN(int start, int N, int *arr) {
 	for (int i = 0; i < N; i++) arr[i] = start + i;
+	if(N <= 1) return;
 	// shuffle the array contents
 	for (int i = 0; i < N; i++) {
 		int x = rand() % (N - 1);
@@ -317,8 +351,14 @@ void growN(heap p, int count, bool heapOrdered) {
 	int max = empty(p) ? 0 : maximum(p) + 1;
 	void(*insertFunc)(heap h, int key) = heapOrdered ? grow : growCBT;
 
-	cout << "your code here\n";
+	int* key = new(nothrow) int[count];
+	assert(key != nullptr);
+	randomN(max, count, key);
 
+	for(int i = 0; i < count; i++)
+		insertFunc(p, key[i]);
+
+	delete[] key;
 	DPRINT(cout << "<growN" << endl;);
 }
 
@@ -330,7 +370,11 @@ void growN(heap p, int count, bool heapOrdered) {
 void trimN(heap p, int count, bool heapOrdered) {
 	DPRINT(cout << ">trimN" << endl;);
 
-	cout << "your code here\n";
+	if(count > p->N) count = p->N;
+	void(*deleteFunc)(heap h) = heapOrdered ? trim : trimCBT;
+
+	for(int i = 0; i < count; i++)
+		deleteFunc(p);
 
 	DPRINT(cout << "<trimN" << endl;);
 }

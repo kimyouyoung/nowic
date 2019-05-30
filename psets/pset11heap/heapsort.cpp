@@ -1,4 +1,9 @@
 /** File: heapsort.cpp */
+/*
+* On my honour, I pledge that I have neither received
+* nor provided improper assistance in the completion of this assignment.
+* Signed: ______youyoungkim_______
+*/
 /* This implements the heap sort algorithm (in-place).
 * A given arbitrary input array goes through two passes.
 * 1st pass: heap construction (heapify)
@@ -39,7 +44,7 @@ typedef char Key;
 #define DPRINT(func) func;
 #else
 #define DPRINT(func) ;
-#endif 
+#endif
 
 // define a function pointer that accepts a key array, int, int as arguments
 bool (*comp)(Key*, int, int);
